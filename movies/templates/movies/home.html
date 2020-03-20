@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <style>
+        .link-decore a:link{
+            color: black;
+        }
+        .link-decore a:visited{
+            color: black;
+        }
+        a:hover{
+            color: black;
+            text-decoration: none;
+        }
+
+        span.stars, span.stars span {
+            display: block;
+            background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/747/star-o-white.svg) 0 0 repeat-x;
+            width: 120px; /* width of a star multiplied by 5 */
+            height: 12px; /* the height of the star */
+            background-size: 12px 12px;
+            filter: drop-shadow(0px 0px 0px #444);
+        }
+
+        span.stars span {
+            background-position: 0 0;
+            background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/747/star.svg);
+        }
+
+        hr.style-two {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+        }
+    </style>
+
+    <div class="container mt-4">
+        <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+                <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                {% for item in movie_slid_bar.all %}
+                    <div class="carousel-item {% if item.rate > 8 %} {{ 'active' }} {% endif %} }"><a href="{% url 'detailed_movie' item.id %}">
+                        <img src="{{ item.image.url }}" class="d-block w-100 img-fluid" alt="...">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>{{ item.title }}</h5>
+                            <p>{{ item.summary }}</p>
+                        </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+
+
+            <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+        <h4 class="mt-4">Top Rated</h4>
+        <hr class="hr-class">
+
+        <div>
+            <div class="row">
+                {% for item in movies_top_rated %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3 link-decore"><a href="{% url 'detailed_movie' item.id %}">
+                        <div class="card" style="height: 100%">
+                            <div style="padding-top: 147%; position: relative; overflow: hidden">
+                                <img src="{{ item.icon.url }}" class="card-img-top" style="position: absolute; top: 0"
+                                     alt="{{ item.title }}">
+                            </div>
+                            <div class="card-body"
+                                 style=" display: flex; flex-direction: column; justify-content: space-between">
+                                <div class="mb-1">
+                                    <h6 class="card-title">{{ item.title }}</h6>
+                                </div>
+
+                                <div style="align-self: flex-start">
+                                    <p><span class="stars">{{ item.rate }}</span></p>
+                                    <p>{{ item.rate|stringformat:'.1f' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    </div>
+                {% endfor %}
+                <a href="{% url 'all_movies' %}" class="mx-auto">
+                    <button class="btn btn-light btn-outline-secondary">View More</button>
+                </a>
+            </div>
+        </div>
+
+        <h4 class="mt-4">Whats New</h4>
+        <hr class="hr-class">
+
+        <div>
+            <div class="row">
+                {% for item in new_movies %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3 link-decore"><a href="{% url 'detailed_movie' item.id %}">
+                        <div class="card" style="height: 100%">
+                            <div style="padding-top: 147%; position: relative; overflow: hidden">
+                                <img src="{{ item.icon.url }}" class="card-img-top" style="position: absolute; top: 0"
+                                     alt="{{ item.title }}">
+                            </div>
+                            <div class="card-body"
+                                 style=" display: flex; flex-direction: column; justify-content: space-between">
+                                <div class="mb-1">
+                                    <h6 class="card-title">{{ item.title }}</h6>
+                                </div>
+
+                                <div style="align-self: flex-start">
+                                    <p><span class="stars">{{ item.rate }}</span></p>
+                                    <p>{{ item.rate|stringformat:'.1f' }}/10</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    </div>
+                {% endfor %}
+                <a href="{% url 'latest' %}" class="mx-auto">
+                    <button class="btn btn-light btn-outline-secondary">View More</button>
+                </a>
+            </div>
+        </div>
+
+        <h4 class="mt-4">Famous Actors</h4>
+        <hr class="hr-class">
+
+        <div>
+            <div class="row">
+                {% for item in famous_actors %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3 link-decore"><a href="{% url 'actor_detail' item.id %}">
+                        <div class="card" style="height: 100%">
+                            <div style="padding-top: 147%; position: relative; overflow: hidden">
+                                <img src="{{ item.icon.url }}" class="card-img-top" style="position: absolute; top: 0"
+                                     alt="{{ item.name }}">
+                            </div>
+                            <div class="card-body"
+                                 style=" display: flex; flex-direction: column; justify-content: space-between">
+                                <div class="mb-1">
+                                    <h6 class="card-title">{{ item.name }}</h6>
+                                </div>
+                                <div>
+                                    <h6>{{ item.born_date|date:'d M Y' }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    </div>
+                {% endfor %}
+                <a href="{% url 'actors' %}" class="mx-auto">
+                    <button class="btn btn-light btn-outline-secondary mb-2">View More</button>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

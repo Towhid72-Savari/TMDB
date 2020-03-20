@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <style>
+
+        .link-decore a:link {
+            color: black;
+        }
+
+        .link-decore a:visited {
+            color: black;
+        }
+
+        .link-decore a:hover {
+            color: black;
+            text-decoration: none;
+        }
+
+        .actor-cls a:hover {
+            color: #4a72d6;
+            text-decoration: none;
+        }
+
+        .actor-cls a:link {
+            color: black;
+        }
+
+        .actor-cls a:visited {
+            color: black;
+        }
+
+        span.stars, span.stars span {
+            display: block;
+            background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/747/star-o-white.svg) 0 0 repeat-x;
+            width: 120px; /* width of a star multiplied by 5 */
+            height: 12px; /* the height of the star */
+            background-size: 12px 12px;
+            filter: drop-shadow(0px 0px 0px #444);
+        }
+
+        span.stars span {
+            background-position: 0 0;
+            background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/747/star.svg);
+        }
+
+        body, html {
+            height: 100%;
+        }
+
+        .hero-image {
+            /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ movies.image.url }}');
+
+            /* Set a specific height */
+            height: 50%;
+
+            /* Position and center the image to scale nicely on all screens */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: relative;
+            margin-right: 10%;
+            margin-left: 10%;
+        }
+
+        /* Place text in the middle of the image */
+        .hero-text {
+            text-align: center;
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+        }
+
+        .movie-detail {
+            margin-right: 10%;
+            margin-left: 10%;
+        }
+    </style>
+
+
+    <div class="hero-image mt-2">
+        <div class="hero-text">
+            <h1>{{ movies.title }}</h1>
+            <p>{{ movies.release_date|date:'Y' }}</p>
+        </div>
+    </div>
+    <div class="card movie-detail mb-2">
+        <h5 class="card-header">{{ movies.genre }}</h5>
+        <div class="card-body actor-cls">
+            <h5 class="card-title">Directed by: {{ movies.director }}</h5>
+            <p class="card-text">{{ movies.summary }}</p>
+            <p>Actors:
+                {% for item in movies.cast_list_func %}
+                    {% if forloop.counter == movies.cast_list_func|length %}
+                        <a href="{% url 'actor_detail' item.id %}">{{ item }}</a>
+                    {% else %}
+                        <a href="{% url 'actor_detail' item.id %}">{{ item }}</a>,
+                    {% endif %}
+                {% endfor %}
+            </p>
+            <p>{{ movies.rate|stringformat:'.1f' }}/10 from {{ movies.rate_counter }} votes</p>
+            {% if user.is_authenticated %}
+                {% if movies in rated %}
+                    <p>You rated before</p>
+                {% else %}
+                    <form class="float-left" method="post" action="{% url 'voting' movies.id %}">
+                        {% csrf_token %}
+                        <label for="cars" style="font-size: large">Your Vote: </label>
+                        <select id="cars" class="btn btn-warning btn-large" name="vote_value">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                        <input type="submit" value="Submit" class="btn btn-primary btn-large">
+                    </form>
+                {% endif %}
+                <form method="post" action="{% url 'accounts:watchlist' movies.id %}">
+                    {% csrf_token %}
+                    <input {% if movies in listed%}
+                        disabled class="float-right btn btn-danger"
+                        value="Marked"
+                    {% else %}
+                        class="float-right btn btn-outline-danger"
+                        value="Watch List"
+                    {% endif %} type="submit">
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container">
+        <h4 class="mt-4">Related Movies</h4>
+        <hr class="hr-class">
+    </div>
+
+    <div class="container mx-auto">
+        <div class="row">
+            {% for item in related %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3 link-decore"><a
+                        href="{% url 'detailed_movie' item.id %}">
+                    <div class="card" style="height: 100%">
+                        <div style="padding-top: 147%; position: relative; overflow: hidden">
+                            <img src="{{ item.icon.url }}" class="card-img-top" style="position: absolute; top: 0"
+                                 alt="{{ item.title }}">
+                        </div>
+                        <div class="card-body"
+                             style=" display: flex; flex-direction: column; justify-content: space-between">
+                            <div class="mb-1">
+                                <h6 class="card-title">{{ item.title }}</h6>
+                            </div>
+
+                            <div style="align-self: flex-start">
+                                <p><span class="stars">{{ item.rate }}</span></p>
+                                <p>{{ item.rate|stringformat:'.1f' }}/10</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <h4 class="movie-detail">Comments</h4>
+    <hr class="hr-class movie-detail">
+
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'comment' movies.id %}">
+            {% csrf_token %}
+            <div class="card mt-2 movie-detail my-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.first_name }}</h5>
+                    <textarea name="cm-text" style="width: 100%; height: 100px"
+                              placeholder="Write your comment here"></textarea>
+                    <input type="submit" value="Post" class="btn btn-primary">
+                </div>
+            </div>
+        </form>
+    {% endif %}
+    {% if movies.comment_func %}
+        {% for item in movies.comment_func %}
+            <div class="card movie-detail mt-2 mb-2">
+                <div class="card-header">
+                    {{ item.author.first_name }}
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                        <p>{{ item.cm_text }}</p>
+                        <footer class="blockquote-footer"><cite
+                                title="Source Title">{{ item.cm_date|date:'d M Y, H:i' }}</cite>
+                        </footer>
+                    </blockquote>
+                </div>
+            </div>
+        {% endfor %}
+
+    {% endif %}
+
+{% endblock %}

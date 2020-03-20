@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <style>
+        .error {
+            border: 1px solid #ff3749;
+        }
+    </style>
+
+    <div class="signup-form mt-4 my-5 text-center col-lg-8" style="margin:auto; max-width: 30%">
+        <form action="{% url 'accounts:signup' %}" method="post">
+            {% csrf_token %}
+            <h2>Create Account</h2>
+            <p class="lead">It's free and hardly takes more than 30 seconds.</p>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-paper-plane"></i></span>
+                    <input id="id_firstname" type="text" class="form-control {% if error.email %}{{ 'error' }}{% endif %}"
+                           name="firstname" placeholder="Your name"
+                           required="required">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-paper-plane"></i></span>
+                    <input id="id_email" type="email" class="form-control {% if error.email %}{{ 'error' }}{% endif %}"
+                           name="email" placeholder="Email Address"
+                           required="required">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                    <input id="id_password1" type="password" class="form-control {% if error.password %}{{ 'error' }}{% endif %}" name="password" placeholder="Password"
+                           required="required">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+				<span class="input-group-addon">
+					<i class="fa fa-lock"></i>
+					<i class="fa fa-check"></i>
+				</span>
+                    <input id="id_password2" type="password" class="form-control {% if error.password %}{{ 'error' }}{% endif %}" name="confirm_password"
+                           placeholder="Confirm Password"
+                           required="required">
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Sign Up</button>
+            </div>
+            <p class="small text-center">By Sign Up button, you agree to our <br><a href="#">Terms &amp;
+                Conditions</a>, and <a href="#">Privacy Policy</a>.</p>
+        </form>
+        <div class="text-center">Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></div>
+    </div>
+
+{% endblock %}
+

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <style>
+        .link-decore a:link{
+            color: black;
+        }
+        .link-decore a:visited{
+            color: black;
+        }
+        a:hover{
+            color: black;
+            text-decoration: none;
+        }
+
+        span.stars, span.stars span {
+            display: block;
+            background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/747/star-o-white.svg) 0 0 repeat-x;
+            width: 120px; /* width of a star multiplied by 5 */
+            height: 12px; /* the height of the star */
+            background-size: 12px 12px;
+            filter: drop-shadow(0px 0px 0px #444);
+        }
+
+        span.stars span {
+            background-position: 0 0;
+            background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/747/star.svg);
+        }
+    </style>
+
+    <div class="container mt-4">
+        <h4 class="mt-4">Your Watch List</h4>
+        <hr class="hr-class">
+        <div>
+            <div class="row">
+                {% if user_watch_list %}
+                    {% for item in user_watch_list.all %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3 link-decore"><a href="{% url 'detailed_movie' item.id %}">
+                        <div class="card" style="height: 100%">
+                            <div style="padding-top: 147%; position: relative; overflow: hidden">
+                                <img src="{{ item.icon.url }}" class="card-img-top" style="position: absolute; top: 0"
+                                     alt="{{ item.title }}">
+                            </div>
+                            <div class="card-body"
+                                 style=" display: flex; flex-direction: column; justify-content: space-between">
+                                <div class="mb-1">
+                                    <h6 class="card-title">{{ item.title }}</h6>
+                                </div>
+
+                                <div style="align-self: flex-start">
+                                    <p><span class="stars">{{ item.rate }}</span></p>
+                                    <p>{{ item.rate|stringformat:'.1f' }}/10</p>
+                                    <form method="post" action="{% url 'accounts:delete' item.id %}">
+                                        {% csrf_token %}
+                                        <input type="submit" value="Watched!" class="btn btn-danger float-right btn-sm" style="width: 100%">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    </div>
+                {% endfor %}
+                {% else %}
+                    <div class="my-5 mx-auto text-center">
+                        <h1 class="my-4">Oops!</h1>
+                        <h3 class="my-4">You don't have any movies in your watch list,
+                        go to movies page and select ones you want to watch later!</h3>
+                        <button class="my-4 btn border-info btn-lg"><a style="text-decoration: none" href="{% url 'home' %}">Home</a></button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

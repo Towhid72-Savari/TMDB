@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+    <style>
+        .error {
+            border: 1px solid #ff3749;
+        }
+    </style>
+
+    <div class="container">
+        <form method="post" action="{% url 'accounts:login' %}" class="mt-4" style="margin: auto; max-width: 30%">
+            {% csrf_token %}
+            <h2>Log In</h2>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-paper-plane"></i></span>
+                    <input type="email" class="form-control {% if error.auth_user %}{{ 'error' }}{% endif %}" name="email" placeholder="Email Address"
+                           required="required">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                    <input id="id_password1" type="password" class="form-control {% if error.auth_user %}{{ 'error' }}{% endif %}" name="password" placeholder="Password"
+                           required="required">
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Sign In</button>
+            </div>
+        </form>
+        <div class="text-center my-5">Don't have an account? <a href="{% url 'accounts:signup' %}">Sign Up here</a></div>
+        </form>
+    </div>
+
+{% endblock %}

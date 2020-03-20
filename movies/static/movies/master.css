@@ -1,0 +1,8 @@
+body{
+  background-color: #fafafa;
+}
+
+#carouselExampleCaptions img {
+  object-fit: cover;
+  height: 40vw;
+}

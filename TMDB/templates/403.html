@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="my-5 mx-auto text-center">
+        <h1 class="my-4">Oops!</h1>
+        <h3 class="my-4">This web page is forbidden for your safety ;)</h3>
+        <button class="my-4 btn border-info btn-lg"><a style="text-decoration: none" href="{% url 'home' %}">Home</a>
+        </button>
+    </div>
+
+{% endblock %}

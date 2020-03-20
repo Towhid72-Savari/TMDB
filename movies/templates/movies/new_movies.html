@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <style>
+        a:hover{
+            color: blue;
+            text-decoration: none;
+        }
+
+        span.stars, span.stars span {
+            display: block;
+            background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/747/star-o-white.svg) 0 0 repeat-x;
+            width: 120px; /* width of a star multiplied by 5 */
+            height: 12px; /* the height of the star */
+            background-size: 12px 12px;
+            filter: drop-shadow(0px 0px 0px #444);
+        }
+
+        span.stars span {
+            background-position: 0 0;
+            background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/747/star.svg);
+        }
+
+        /*PEN STYLES*/
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f1f1f1;
+        }
+
+        .blog-card {
+            display: -webkit-box;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            flex-direction: column;
+            box-shadow: 0 3px 7px -1px rgba(0, 0, 0, 0.1);
+            margin: auto auto 1.6%;
+            background: #fff;
+            line-height: 1.4;
+            font-family: sans-serif;
+            border-radius: 5px;
+            overflow: hidden;
+            z-index: 0;
+            width: 100%;
+        }
+
+        .blog-card a {
+            color: inherit;
+        }
+
+        .blog-card a:hover {
+            color: #4a72d6;
+        }
+
+        .blog-card:hover .photo {
+            -webkit-transform: scale(1.3) rotate(3deg);
+            transform: scale(1.3) rotate(3deg);
+        }
+
+        .blog-card .meta {
+            position: relative;
+            z-index: 0;
+            height: 320px;
+        }
+
+        .blog-card .photo {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-size: cover;
+            background-position: center;
+            -webkit-transition: -webkit-transform .2s;
+            transition: -webkit-transform .2s;
+            transition: transform .2s;
+            transition: transform .2s, -webkit-transform .2s;
+        }
+
+        .blog-card .details,
+        .blog-card .details ul {
+        {#margin: auto;#} padding: 0;
+            list-style: none;
+        }
+
+        .blog-card .details {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: -100%;
+            margin: auto;
+            -webkit-transition: left .2s;
+            transition: left .2s;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 10px;
+            width: 100%;
+            font-size: .9rem;
+        }
+
+        .blog-card .details a {
+            -webkit-text-decoration: dotted underline;
+            text-decoration: dotted underline;
+        }
+
+        .blog-card .details ul li {
+            display: inline-block;
+        }
+
+        .blog-card .details .author:before {
+            font-family: FontAwesome;
+            margin-right: 10px;
+            content: "\f007";
+        }
+
+        .blog-card .details .date:before {
+            font-family: FontAwesome;
+            margin-right: 10px;
+            content: "\f133";
+        }
+
+        .blog-card .details .tags ul:before {
+            font-family: FontAwesome;
+            content: "\f02b";
+            margin-right: 10px;
+        }
+
+        .blog-card .details .tags li {
+            margin-right: 2px;
+        }
+
+        .blog-card .details .tags li:first-child {
+            margin-left: -4px;
+        }
+
+        .blog-card .description {
+            padding: 1rem;
+            background: #fff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .blog-card .description h1,
+        .blog-card .description h2 {
+            font-family: Poppins, sans-serif;
+        }
+
+        .blog-card .description h1 {
+            line-height: 1;
+            margin: 0;
+            font-size: 1.7rem;
+        }
+
+        .blog-card .description h2 {
+            font-size: 1rem;
+            font-weight: 300;
+            text-transform: uppercase;
+            color: #a2a2a2;
+            margin-top: 5px;
+        }
+
+        .blog-card .description .read-more {
+            text-align: right;
+        {#margin-top: 10%;#}
+        }
+
+        .blog-card .description .read-more a {
+            color: #4a72d6;
+            display: inline-block;
+            position: relative;
+        }
+
+        .blog-card .description .read-more a:after {
+        {#content: "\f061";#} font-family: FontAwesome;
+            margin-left: -10px;
+            opacity: 0;
+            vertical-align: middle;
+            -webkit-transition: margin .3s, opacity .3s;
+            transition: margin .3s, opacity .3s;
+        }
+
+        .blog-card .description .read-more a:hover:after {
+            margin-left: 5px;
+            opacity: 1;
+        }
+
+        .blog-card p {
+            position: relative;
+            margin: 1rem 0 0;
+        }
+
+        .blog-card p:first-of-type {
+            margin-top: 1.25rem;
+        }
+
+        .blog-card p:first-of-type:before {
+            content: "";
+            position: absolute;
+            height: 5px;
+            background: #4a72d6;
+            width: 35px;
+            top: -0.75rem;
+            border-radius: 3px;
+        }
+
+        .blog-card:hover .details {
+            left: 0%;
+        }
+
+        @media (min-width: 992px) {
+            .blog-card {
+                -webkit-box-orient: horizontal;
+                -webkit-box-direction: normal;
+                flex-direction: row;
+                max-width: 100%;
+            }
+
+            .blog-card .meta {
+                flex-basis: 40%;
+
+            }
+
+            .blog-card .description {
+                flex-basis: 60%;
+            }
+
+            .blog-card .description:before {
+                -webkit-transform: skewX(-3deg);
+                transform: skewX(-3deg);
+                content: "";
+                background: #fff;
+                width: 30px;
+                position: absolute;
+                left: -10px;
+                top: 0;
+                bottom: 0;
+                z-index: -1;
+            }
+
+            .blog-card.alt {
+                -webkit-box-orient: horizontal;
+                -webkit-box-direction: reverse;
+                flex-direction: row-reverse;
+            }
+
+            .blog-card.alt .description:before {
+                left: inherit;
+                right: -10px;
+                -webkit-transform: skew(3deg);
+                transform: skew(3deg);
+            }
+
+            .blog-card.alt .details {
+                padding-left: 25px;
+            }
+        }
+
+    </style>
+
+    <div class="container">
+        <div class="row">
+            {% for movie in movies_list %}
+                <div class="blog-card mt-4">
+                    <div class="meta">
+                        <div class="photo"
+                             style="background-image: url({{ movie.image.url }});"></div>
+                        <ul class="details">
+                            <span>{{ movie.director }}</span>
+                            <div>
+                                <span>{{ movie.release_date|date:'Y' }}</span>
+                            </div>
+                        </ul>
+                    </div>
+                    <div class="description">
+                        <h1>{{ movie.title }}</h1>
+                        <h2>{{ movie.genre }}</h2>
+                        <p>{{ movie.summary }}</p>
+                        <div style="align-self: flex-start" class="link-decor">
+                            <p>Actors: {% for item in movie.cast_list_func %}
+                                {% if forloop.counter == movie.cast_list_func|length %}
+                                    <a href="{% url 'actor_detail' item.id %}">{{ item }}</a>
+                                {% else %}
+                                    <a href="{% url 'actor_detail' item.id %}">{{ item }}</a>,
+                                {% endif %}
+                            {% endfor %}
+                            </p>
+                        </div>
+                        <div style="align-self: flex-start">
+                            <p><span class="stars">{{ movie.rate }}</span></p>
+                            <p>{{ movie.rate|stringformat:'.1f' }}/10</p>
+                        </div>
+                        <p class="read-more">
+                            <a href="{% url 'detailed_movie' movie.id %}">Read More</a>
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+        {% if is_paginated %}
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1">Previous</a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item active"><a class="page-link"
+                                                    href="?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
+                    </li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+{% endblock %}
